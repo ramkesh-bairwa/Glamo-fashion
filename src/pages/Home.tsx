@@ -10,9 +10,9 @@ const Home: React.FC = () => {
   const featuredBrands = getFeaturedBrands();
 
   return (
-    <div className="mt-16">
+    <div className="mt-16 h-128">
       {/* Hero Section */}
-      <section style={{background:"black"}} className="py-12 bg-gray-50">
+      <section className="py-20 h-[70vh] bg-black">
         <div className="container">
           <div className="flex flex-col items-center text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-white">
@@ -122,7 +122,7 @@ const Home: React.FC = () => {
               <Link 
                 key={brand.id} 
                 to={`/brands/${brand.id}`}
-                className="bg-white rounded-lg p-6 bg-black shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
+                className="rounded-lg p-6 bg-black shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
               >
                 <div className="w-20 h-20 mb-4 overflow-hidden rounded-full bg-gray-100 flex items-center justify-center">
                   <img 
@@ -142,7 +142,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Newsletter */}
-      <section className="py-16 bg-gray-900 text-white bg-black">
+      <section className="py-16 text-white bg-black">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             {/* <h2 className="text-2xl md:text-3xl font-bold mb-4">

@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Quick Links</h4>
+            <h4 className="text-lg font-medium mb-4 text-white">Quick Links</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/about" className="text-gray-400 hover:text-primary transition-colors">
@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
 
           {/* Info */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Information</h4>
+            <h4 className="text-lg font-medium mb-4 text-white">Information</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/privacy-policy" className="text-gray-400 hover:text-primary transition-colors">
@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Contact</h4>
+            <h4 className="text-lg font-medium mb-4 text-white">Contact</h4>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin size={20} className="text-primary mr-2 mt-1 flex-shrink-0" />
