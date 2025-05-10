@@ -12,8 +12,7 @@ const Footer: React.FC = () => {
           {/* About */}
           <div>
             <h3 className="text-xl font-bold mb-4">
-            <span className="text-primary text-white text-4xl">Glamo </span>
-            <span className='text-white text-4xl'>Fashion</span>
+            <span className="text-primary text-white text-4xl">GlamoFashion</span>
             </h3>
             <p className="text-gray-400 mb-4">
               Your trusted destination for the best affiliate products at competitive prices. 

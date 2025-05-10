@@ -93,12 +93,12 @@ const About: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <img 
-                src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                src="https://media-hosting.imagekit.io/19e352f898ff44f9/profile.jpg?Expires=1841205539&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=oGL3eOdl3jUIrLbq8lPNUJlXYUxIKtHNpPAI4YuM5eQBN5RYDHHM4HgKy9kjIHLk3HrGWXqmSoJ68PaYUS7i9vF5yokvSzH18UwgVOaUOKzHbAoL93JIZIxyZaUj6H27PcWwiJtJ~IgY20kRgmJpYBIquYiOyJHF0I~kJUCQVW~4IFPX~QezgQMAkwJCdDmG-Hy7NkimJ62mNVBL-64fu6El8JshZXsONSZVjqped2yb57o3zZwdfbxhMcMRCMwYT4s4anxxJdyE7DBaG~WIdFEfaDCNkq2fYKf3~QueY5iV9rz1R6HHwG0M52Bzk0W3844ONoQw8GHwmIRYUA9Jzw__" 
                 alt="Team Member" 
                 className="w-full h-64 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-1">Alex Johnson</h3>
+                <h3 className="text-xl font-semibold mb-1">Ramkesh Bairwa</h3>
                 <p className="text-primary mb-3">Founder & CEO</p>
                 <p className="text-gray-600">
                   With over 10 years in product research and e-commerce, Alex founded AffiliStore to help consumers make better purchasing decisions.
@@ -108,12 +108,12 @@ const About: React.FC = () => {
             
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <img 
-                src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                src="https://media-hosting.imagekit.io/cca35620c24c4900/nvl.jpg?Expires=1841206181&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=nKYGxSejAqlfZouSGoThZxiAx~2PrbLf20C~NOP7s00UUEq-0D0M4bkLCZTOxJCjMH4vft3~p4dVvuEeujE4BEWA0VGCQWnCdF94ypBFgH0rV64uqRPlrVFXH~hTlRT6pJgnPeufOdnMrG7ygw5rYsNlF9ILXrs8PlQuQotO16KEvoHnhdAzyE~YRYjt9AhCAM7XCfou-aLQpehTBCrfmtw6iKEsfQrza0Tc2JpvpD4t7ge8u7EzFZliC~wPEc9Jk5fXdAGE6wAojOBd4kzideYA-WO5nePqiXtNYQQwhLyhv7z1Nn9J8Z9BVjD0f5wtCBzo6GX38Rv0i0BR7SKu7w__" 
                 alt="Team Member" 
                 className="w-full h-64 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-1">Sarah Chen</h3>
+                <h3 className="text-xl font-semibold mb-1">Naval Kumar</h3>
                 <p className="text-primary mb-3">Head of Product Research</p>
                 <p className="text-gray-600">
                   Sarah leads our product testing team, bringing her expertise in consumer electronics and home goods to ensure thorough, accurate reviews.
@@ -123,15 +123,30 @@ const About: React.FC = () => {
             
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <img 
-                src="https://images.pexels.com/photos/3778603/pexels-photo-3778603.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                src="https://media-hosting.imagekit.io/176be30b0dd64858/vsl.jpg?Expires=1841206372&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=0JAwXMDtZ62yUNCjvfNnKsr96bQGEuitNPNad7Jt3VRgknXZpBfaSknXBcrTgGVKUrDyHt~5xDP1RSXzmgqUj6TkO21w~842x63MfTE1cQRO7WbbKPpH4gsja-p-rKhAWOqSHom4oSx0seh1JsDJIHMOoq99ODwPSZDMLZK2Hi2dVbPEKH1Row~RJIEwRfDgaPvwzAGjJDQFvccNT8RWoSKmZVR15j0fWWuqGXOmRZMHeeA~UrlDe0TrX6CUK8vbh4DXAcsUYZJYEZ4lRErAeKjQ5LJRPIiHgkEOMaTP7oTUiicKU3YiCn8qq3HF3eSAfkbXcaH5R53eN8~p04eEfA__" 
                 alt="Team Member" 
                 className="w-full h-64 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-1">Michael Rivera</h3>
+                <h3 className="text-xl font-semibold mb-1">Vishal Kewat</h3>
                 <p className="text-primary mb-3">Content Director</p>
                 <p className="text-gray-600">
                   Michael ensures our content is informative, engaging, and accessible, helping users understand the features and benefits of each product.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <img 
+                src="https://media-hosting.imagekit.io/9985d3a6c8844a97/rv.jpg?Expires=1841206552&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=vWKcg8UrAgLzun09y3mP9mzYo-ieVxd3LTMVHfsdvLY6GwJAGbb~ZYl4VO2FBtzDPk~kCc2as5uDU7s3sH6ybPVRnxpGoKGpwK1vbfxPRVK2xVUe5qmekQNcwaabxzohj972goSVpS5MoMmYjPtnB4mYCHMQCwuiwjAdJR5rovWZdeT8HTjNCa1ekNoBnNAv~Xl7CHNerM3uek7OpVeY8JiwH1CFi9wzWIdMiT8ZYvs3yo~sYp9H8T5mHuGo~zyEEmrDtD5CTJqAUNTBGXFdE69l7mchEB~OHKsxnhdgkxuxlXIxQdwxeoXhoT99-gUelAMFQgd5YDIDMoCQ-qMEkQ__" 
+                alt="Team Member" 
+                className="w-full h-64 object-cover"
+              />
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-1">Ravi Kumar</h3>
+                <p className="text-primary mb-3">Founder & CEO</p>
+                <p className="text-gray-600">
+                  With over 10 years in product research and e-commerce, Alex founded AffiliStore to help consumers make better purchasing decisions.
                 </p>
               </div>
             </div>
