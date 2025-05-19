@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import {  Link } from 'react-router-dom';
 import { ArrowLeft, Package, Truck, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
 
 // Sample data for demonstration

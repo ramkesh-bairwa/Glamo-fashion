@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CheckCircle, Package, ArrowRight, List } from 'lucide-react';
 
 const OrderSuccess: React.FC = () => {
