@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 192, 201, 4;
+    --color-primary-dark: 160, 168, 3;
+    --color-primary-light: 205, 214, 41;
+    --color-secondary: 70, 70, 70;
+    --color-accent: 251, 146, 60;
+    --color-success: 34, 197, 94;
+    --color-warning: 245, 158, 11;
+    --color-error: 239, 68, 68;
+  }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    @apply text-gray-800 bg-gray-50;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-medium text-gray-900 leading-tight;
+  }
+}
+
+@layer components {
+  .container {
+    @apply px-4 mx-auto max-w-7xl;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium transition-colors rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply text-gray-900 bg-primary hover:bg-primary-dark focus:ring-primary;
+  }
+
+  .btn-secondary {
+    @apply text-white bg-secondary hover:bg-secondary-dark focus:ring-secondary;
+  }
+
+  .btn-outline {
+    @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary;
+  }
+
+  .card {
+    @apply overflow-hidden bg-white rounded-lg shadow-sm transition-shadow hover:shadow-md;
+  }
+
+  .product-grid {
+    @apply grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
+  }
+}
