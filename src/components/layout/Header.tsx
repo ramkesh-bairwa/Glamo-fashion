@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
+import {  ShoppingCart, User, Menu, X } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,9 +23,8 @@ const Header: React.FC = () => {
 
   return (
     <header
-      style={{background:"black"}} 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-black ${
-        isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
+        isScrolled ? 'bg-black shadow-md py-2' : 'bg-black py-4'
       }`}
     >
       <div className="container flex items-center justify-between">

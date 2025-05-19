@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import {  Link } from 'react-router-dom';
 import { ArrowLeft, Package, Truck, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
 
 // Sample data for demonstration
@@ -40,7 +40,6 @@ const sampleOrder = {
 };
 
 const OrderDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   
   // In a real app, you'd fetch the order data based on the ID
   const order = sampleOrder;

@@ -9,36 +9,85 @@ const Home: React.FC = () => {
   const trendingProducts = getTrendingProducts(8);
   const featuredBrands = getFeaturedBrands();
 
+  const categories = [
+    {
+      title: "Skin & Beauty",
+      image: "/images/portrait-young-japanese-woman-with-jacket.jpg", // Add real image paths in /public/images
+      href: "/category/beauty",
+    },
+    {
+      title: "Fashion Picks",
+      image: "/images/beauty-portrait-mystery-smiling-ginger-woman-with-long-hair-posing-sideways-looking.jpg",
+      href: "/category/fashion",
+    },
+    {
+      title: "Commercial Outfit",
+      image: "/images/young-woman-with-shopping-bags-beautiful-dress.jpg",
+      href: "/category/tech",
+    },
+    {
+      title: "Wellness Essentials",
+      image: "/images/calm-businesswoman-relaxing-with-breath-gymnastics.jpg",
+      href: "/category/wellness",
+    },
+  ]
+
   return (
-    <div className="mt-16 h-128">
+    <div className="mt-16">
       {/* Hero Section */}
-      <section className="py-20 h-[70vh] bg-black">
-        <div className="container">
-          <div className="flex flex-col items-center text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-white">
-              Discover the Best <span className="text-primary">Affiliate Products</span>
-            </h1>
-            <p className="text-lg text-gray-600 max-w-3xl mb-8 text-white">
-              Explore our curated selection of high-quality products from trusted brands. 
-              We've done the research so you can shop with confidence.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link 
-                to="/products" 
-                className="btn btn-primary px-8 py-3"
-              >
-                Shop Now
-              </Link>
-              <Link 
-                to="/brands" 
-                className="btn btn-outline px-8 py-3"
-              >
-                Explore Brands
-              </Link>
+      <section className="py-12 bg-black text-white">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              {/* Left Side - Image */}
+              <div className="w-full md:w-1/2">
+                <img className=" h-[650px] object-cover" src="/images/design-1.png" alt="Design" />
+              </div>
+
+              {/* Right Side - Content */}
+              <div className="w-full md:w-1/2 text-center md:text-left">
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Discover the Best <span className="text-primary">Affiliate Products</span>
+                </h1>
+                <p className="text-lg text-white max-w-xl mb-8">
+                  Explore our curated selection of high-quality products from trusted brands. 
+                  We've done the research so you can shop with confidence.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                  <Link to="/products" className="btn btn-primary px-8 py-3">
+                    Shop Now
+                  </Link>
+                  <Link to="/brands" className="btn btn-outline px-8 py-3">
+                    Explore Brands
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        
+      <section className="bg-white text-white py-16 px-6 md:px-20 margin-top: 30px">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Explore Affiliate Categories</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {categories.map((cat) => (
+              <div
+                key={cat.title}
+                onClick={() => router.push(cat.href)}
+                className="relative rounded-2xl overflow-hidden cursor-pointer group"
+              >
+                <img
+                  src={cat.image}
+                  alt={cat.title}
+                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-4 left-4 z-10">
+                  <h3 className="text-xl text-white font-semibold">{cat.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
       {/* Trending Products */}
       <section className="py-16">
@@ -122,7 +171,7 @@ const Home: React.FC = () => {
               <Link 
                 key={brand.id} 
                 to={`/brands/${brand.id}`}
-                className="rounded-lg p-6 bg-black shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
+                className="bg-black rounded-lg p-6 bg-black shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
               >
                 <div className="w-20 h-20 mb-4 overflow-hidden rounded-full bg-gray-100 flex items-center justify-center">
                   <img 
@@ -131,10 +180,10 @@ const Home: React.FC = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-lg font-medium text-center mb-2">{brand.name}</h3>
-                <p className="text-white text-center line-clamp-2 text-sm">
+                <h1 className="text-lg text-white font-medium text-center mb-2">{brand.name}</h1>
+                {/* <p className="text-white text-center line-clamp-2 text-sm">
                   {brand.description.split('.')[0]}
-                </p>
+                </p> */}
               </Link>
             ))}
           </div>
@@ -142,7 +191,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Newsletter */}
-      <section className="py-16 text-white bg-black">
+      <section className="py-16 bg-gray-900 text-white bg-black">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             {/* <h2 className="text-2xl md:text-3xl font-bold mb-4">
