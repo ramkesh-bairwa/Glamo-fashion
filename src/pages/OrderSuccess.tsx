@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle, Package, ArrowRight, List } from 'lucide-react';
 
 const OrderSuccess: React.FC = () => {
-  const location = useLocation();
   // In a real app, you'd get the order info from the location state or from API
   const orderInfo = {
     orderId: '1001',

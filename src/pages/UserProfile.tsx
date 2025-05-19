@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Package, CreditCard, LogOut, ShoppingCart, Heart, ChevronRight, AlertCircle } from 'lucide-react';
+import { User, Package, CreditCard, LogOut, Heart, ChevronRight, AlertCircle } from 'lucide-react';
 
 // Sample user data for demonstration
 const sampleUser = {

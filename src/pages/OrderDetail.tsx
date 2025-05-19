@@ -40,7 +40,6 @@ const sampleOrder = {
 };
 
 const OrderDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
   
   // In a real app, you'd fetch the order data based on the ID
   const order = sampleOrder;

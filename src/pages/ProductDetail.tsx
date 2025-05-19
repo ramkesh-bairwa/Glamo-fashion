@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import { Star, Check, X, ShoppingCart, ExternalLink, ChevronRight } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import { getProductById, getRelatedProducts } from '../data/products';
-import { ProductType } from '../types';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
