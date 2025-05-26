@@ -90,7 +90,7 @@ const About: React.FC = () => {
       <section className="py-16">
         <div className="container">
           <h2 className="text-3xl font-bold mb-12 text-center">Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <img 
                 src="https://media-hosting.imagekit.io/19e352f898ff44f9/profile.jpg?Expires=1841205539&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=oGL3eOdl3jUIrLbq8lPNUJlXYUxIKtHNpPAI4YuM5eQBN5RYDHHM4HgKy9kjIHLk3HrGWXqmSoJ68PaYUS7i9vF5yokvSzH18UwgVOaUOKzHbAoL93JIZIxyZaUj6H27PcWwiJtJ~IgY20kRgmJpYBIquYiOyJHF0I~kJUCQVW~4IFPX~QezgQMAkwJCdDmG-Hy7NkimJ62mNVBL-64fu6El8JshZXsONSZVjqped2yb57o3zZwdfbxhMcMRCMwYT4s4anxxJdyE7DBaG~WIdFEfaDCNkq2fYKf3~QueY5iV9rz1R6HHwG0M52Bzk0W3844ONoQw8GHwmIRYUA9Jzw__" 
@@ -150,7 +150,7 @@ const About: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
