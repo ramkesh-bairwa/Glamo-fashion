@@ -95,19 +95,19 @@ const Footer: React.FC = () => {
               <li className="flex items-start">
                 <MapPin size={20} className="text-primary mr-2 mt-1 flex-shrink-0" />
                 <span className="text-gray-400">
-                  123 Commerce Street, Business District, City, Country
+                  Malviya nagar, Jaipur, Rajasthan
                 </span>
               </li>
               <li className="flex items-center">
                 <Phone size={20} className="text-primary mr-2 flex-shrink-0" />
                 <a href="tel:+1234567890" className="text-gray-400 hover:text-primary transition-colors">
-                  +1 (234) 567-890
+                  8387968074
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail size={20} className="text-primary mr-2 flex-shrink-0" />
                 <a href="mailto:info@affilistore.com" className="text-gray-400 hover:text-primary transition-colors">
-                  info@affilistore.com
+                 jaipuraffiliates@gmail.com
                 </a>
               </li>
             </ul>

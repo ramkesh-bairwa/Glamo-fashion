@@ -90,7 +90,7 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="font-medium mb-1">Email Address</h3>
                     <p className="text-gray-600">
-                      <a href="mailto:info@affilistore.com" className="hover:text-primary">info@affilistore.com</a>
+                      <a href="mailto:info@affilistore.com" className="hover:text-primary">jaipuraffiliates@gmail.com</a>
                     </p>
                   </div>
                 </div>
