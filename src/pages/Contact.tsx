@@ -64,9 +64,9 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="font-medium mb-1">Our Location</h3>
                     <p className="text-gray-600">
-                      123 Commerce Street<br />
-                      Business District<br />
-                      City, Country
+                      Malviya Nagar<br />
+                      Jaipur<br />
+                      Rajasthan, Jaipur
                     </p>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="font-medium mb-1">Phone Number</h3>
                     <p className="text-gray-600">
-                      <a href="tel:+1234567890" className="hover:text-primary">+1 (234) 567-890</a>
+                      <a href="tel:+1234567890" className="hover:text-primary">+8387968074ß</a>
                     </p>
                   </div>
                 </div>
