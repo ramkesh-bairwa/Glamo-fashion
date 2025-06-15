@@ -13,9 +13,9 @@ export interface CategoryType {
 
 export interface ProductType {
   id: string;
-  name: string;
+  title: string;
   slug: string;
-  description: string;
+  shortDesc: string;
   price: number;
   originalPrice: number;
   discount: number;
