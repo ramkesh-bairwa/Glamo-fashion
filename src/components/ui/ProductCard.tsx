@@ -9,11 +9,13 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, showAffiliate = true }) => {
+  console.log(product.brand_name)
   const {
     id,
     title,
     image,
-    brand,
+    brand_name,
+    category_name,
     price,
     shortDesc,
     rating = 0,
@@ -43,12 +45,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showAffiliate = true
 
       {/* Product Info */}
       <div className="p-4">
-        <div className="flex items-center text-sm mb-1 text-gray-500">
-          {brand?.name}
+        <div className="flex items-center brand-name text-sm mb-1 text-gray-500">
+          {brand_name}
         </div>
 
         <Link to={`/products/${id}`} className="block">
-          <h3 className="font-medium text-gray-900 mb-1 truncate hover:text-primary transition-colors">
+          <h3 className="font-medium text-gray-900 mb-1 hover:text-primary transition-colors break-words whitespace-normal">
             {title}
           </h3>
         </Link>
@@ -69,8 +71,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showAffiliate = true
 
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <span className="font-bold text-gray-900">${price.toFixed(2)}</span>
+            <span className="font-bold text-gray-900">₹ {price.toFixed(2)}</span>
           </div>
+          
 
           <div className="flex space-x-2">
             <button 

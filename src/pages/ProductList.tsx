@@ -17,7 +17,7 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-      const response = await fetch(`${baseUrl}/affiliate-product`);
+        const response = await fetch(`${baseUrl}/affiliate-product`);
         const result = await response.json();
 
         if (result.status && result.data) {
@@ -25,8 +25,8 @@ const ProductList: React.FC = () => {
             id: item.id,
             title: item.title,
             slug: item.slug,
-            category: { name: item.category },
-            brand: { name: item.brand },
+            category_name: item.category_name,
+            brand_name: item.brand_name,
             price: parseFloat(item.price),
             shortDesc: item.shortDesc,
             longDesc: item.longDesc,
@@ -49,19 +49,19 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const uniqueBrands = Array.from(new Set(products.map(p => p.brand.name)));
-  const uniqueCategories = Array.from(new Set(products.map(p => p.category.name)));
+  const uniqueBrands = Array.from(new Set(products.map(p => p.brand_name)));
+  const uniqueCategories = Array.from(new Set(products.map(p => p.category_name)));
 
   // Filter and sort logic
   useEffect(() => {
     let filtered = [...products];
 
     if (selectedBrands.length > 0) {
-      filtered = filtered.filter(p => selectedBrands.includes(p.brand.name));
+      filtered = filtered.filter(p => selectedBrands.includes(p.brand_name));
     }
 
     if (selectedCategories.length > 0) {
-      filtered = filtered.filter(p => selectedCategories.includes(p.category.name));
+      filtered = filtered.filter(p => selectedCategories.includes(p.category_name));
     }
 
     filtered = filtered.filter(
@@ -154,8 +154,8 @@ const ProductList: React.FC = () => {
             <div className="mb-6">
               <h4 className="font-medium mb-3">Price Range</h4>
               <div className="mb-2 flex justify-between text-sm">
-                <span>${priceRange.min}</span>
-                <span>${priceRange.max}</span>
+                <span>₹ {priceRange.min}</span>
+                <span>₹ {priceRange.max}</span>
               </div>
               <input
                 type="range"
@@ -214,7 +214,7 @@ const ProductList: React.FC = () => {
           ) : (
             <>
               <p className="text-gray-500 mb-6">Showing {displayProducts.length} products</p>
-              <div className="product-grid">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -237,8 +237,7 @@ const ProductList: React.FC = () => {
               </button>
             </div>
 
-            {/* Same filter logic as desktop */}
-            {/* Price */}
+            {/* Mobile Filters */}
             <div className="mb-6">
               <h4 className="font-medium mb-3">Price Range</h4>
               <div className="mb-2 flex justify-between text-sm">
@@ -255,7 +254,6 @@ const ProductList: React.FC = () => {
               />
             </div>
 
-            {/* Brand */}
             <div className="mb-6">
               <h4 className="font-medium mb-3">Brands</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -273,7 +271,6 @@ const ProductList: React.FC = () => {
               </div>
             </div>
 
-            {/* Category */}
             <div className="mb-6">
               <h4 className="font-medium mb-3">Categories</h4>
               <div className="space-y-2">

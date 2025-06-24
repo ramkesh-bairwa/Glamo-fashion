@@ -23,8 +23,8 @@ export interface ProductType {
   images: string[];
   rating: number;
   reviews: number;
-  brand: BrandType;
-  category: CategoryType;
+  brand_name: string;
+  category_name: string;
   affiliateUrl: string;
   features: string[];
   inStock: boolean;
