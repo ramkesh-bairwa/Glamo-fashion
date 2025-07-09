@@ -14,23 +14,19 @@ export interface CategoryType {
 export interface ProductType {
   id: string;
   title: string;
-  slug: string;
-  shortDesc: string;
-  price: number;
-  originalPrice: number;
-  discount: number;
+  slug?: string;
   image: string;
-  images: string[];
-  rating: number;
-  reviews: number;
   brand_name: string;
   category_name: string;
-  affiliateUrl: string;
-  features: string[];
-  inStock: boolean;
-  tags: string[];
-  createdAt: string;
+  price: number;
+  shortDesc?: string;
+  longDesc?: string;
+  affiliateUrl?: string;
+  rating?: number;
+  reviews?: number;
+  discount?: number;
 }
+
 
 export interface UserType {
   id: string;

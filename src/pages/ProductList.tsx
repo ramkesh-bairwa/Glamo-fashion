@@ -77,13 +77,6 @@ const ProductList: React.FC = () => {
         break;
       case 'newest':
         filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      case 'rating':
-        filtered.sort((a, b) => b.rating - a.rating);
-        break;
-      default:
-        filtered.sort((a, b) => b.reviews - a.reviews);
-        break;
     }
 
     setDisplayProducts(filtered);

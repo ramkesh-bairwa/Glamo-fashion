@@ -1,36 +1,65 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star } from 'lucide-react';
-import ProductCard from '../components/ui/ProductCard';
-import { getTrendingProducts } from '../data/products';
-import { getFeaturedBrands } from '../data/brands';
+import TredingProductCard from '../components/ui/TrendingProductCard';
 
 const Home: React.FC = () => {
-  const trendingProducts = getTrendingProducts(8);
-  const featuredBrands = getFeaturedBrands();
+  const [featuredBrands, setFeaturedBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const [trendingProducts, setTrendingProducts] = useState([]);
 
-  const categories = [
-    {
-      title: "Skin & Beauty",
-      image: "/images/portrait-young-japanese-woman-with-jacket.jpg", // Add real image paths in /public/images
-      href: "/category/beauty",
-    },
-    {
-      title: "Fashion Picks",
-      image: "/images/beauty-portrait-mystery-smiling-ginger-woman-with-long-hair-posing-sideways-looking.jpg",
-      href: "/category/fashion",
-    },
-    {
-      title: "Commercial Outfit",
-      image: "/images/young-woman-with-shopping-bags-beautiful-dress.jpg",
-      href: "/category/tech",
-    },
-    {
-      title: "Wellness Essentials",
-      image: "/images/calm-businesswoman-relaxing-with-breath-gymnastics.jpg",
-      href: "/category/wellness",
-    },
-  ]
+  //Catgories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/categories`);
+        const result = await response.json();
+        
+        if (result.status && result.data.data) {
+          const Cats=result.data.data
+          setCategories(Cats);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch trending products
+  useEffect(() => {
+    const fetchTrendingProducts = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/affiliate-product/filter/latest`);
+        const result = await response.json();
+        if (result.status && result?.data) {
+          setTrendingProducts(result.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch trending products:", error);
+      }
+    };
+    fetchTrendingProducts();
+  }, []);
+
+  useEffect(() => {
+  const fetchBrands = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/brands`);
+      const result = await response.json();
+      console.log(result.data)
+      if (result.status && Array.isArray(result.data)) {
+        setFeaturedBrands(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch featured brands:', error);
+    }
+  };
+
+  fetchBrands();
+}, []);
 
   return (
     <div className="mt-16">
@@ -66,52 +95,65 @@ const Home: React.FC = () => {
         </section>
 
         
-      <section className="bg-white text-white py-16 px-6 md:px-20 margin-top: 30px">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Explore Affiliate Categories</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {categories.map((cat) => (
-              <div
-                key={cat.title}
-                onClick={() => router.push(cat.href)}
-                className="relative rounded-2xl overflow-hidden cursor-pointer group"
-              >
-                <img
-                  src={cat.image}
-                  alt={cat.title}
-                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-4 left-4 z-10">
-                  <h3 className="text-xl text-white font-semibold">{cat.title}</h3>
+              <section className="bg-white text-white py-16 px-6 md:px-20">
+                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                  Explore Affiliate Categories
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {categories.length === 0 ? (
+                    <p className="text-gray-500 col-span-full text-center">Loading categories...</p>
+                  ) : (
+                    categories.map((cat) => (
+                      <div
+                        key={cat.slug}
+                        onClick={() => navigate(`/category/${cat.slug}`)}
+                        className="relative rounded-2xl overflow-hidden cursor-pointer group"
+                      >
+                        <img
+                          src={cat.icon}
+                          alt={cat.title}
+                          className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute bottom-4 left-4 z-10">
+                          <h3 className="text-xl text-white font-semibold">{cat.title}</h3>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              </section>
+
+
 
       {/* Trending Products */}
-      <section className="py-16">
-        <div className="container">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-              Trending Products
-            </h2>
-            <Link 
-              to="/products" 
-              className="flex items-center text-primary hover:underline font-medium"
-            >
-              View All
-              <ArrowRight size={18} className="ml-1" />
-            </Link>
-          </div>
+        <section className="py-16">
+              <div className="container">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                    Trending Products
+                  </h2>
+                  <Link 
+                    to="/products" 
+                    className="flex items-center text-primary hover:underline font-medium"
+                  >
+                    View All
+                    <ArrowRight size={18} className="ml-1" />
+                  </Link>
+                </div>
 
-          <div className="product-grid">
-            {trendingProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+                <div className="product-grid">
+                  {trendingProducts.length === 0 ? (
+                    <p className="text-gray-500 text-center col-span-full">Loading trending products...</p>
+                  ) : (
+                    trendingProducts.map((product: any) => (
+                      <TredingProductCard key={product.id} product={product} />
+                    ))
+                  )}
+                 
+                </div>
+              </div>
+        </section>
 
       {/* Value Proposition */}
       <section className="py-16 bg-gray-50">
@@ -167,25 +209,24 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredBrands.map(brand => (
-              <Link 
-                key={brand.id} 
-                to={`/brands/${brand.id}`}
-                className="bg-black rounded-lg p-6 bg-black shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
-              >
-                <div className="w-20 h-20 mb-4 overflow-hidden rounded-full bg-gray-100 flex items-center justify-center">
-                  <img 
-                    src={brand.logo} 
-                    alt={brand.name} 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h1 className="text-lg text-white font-medium text-center mb-2">{brand.name}</h1>
-                {/* <p className="text-white text-center line-clamp-2 text-sm">
-                  {brand.description.split('.')[0]}
-                </p> */}
-              </Link>
-            ))}
+            {featuredBrands.slice(0, 4).map((brand) => (
+                <Link
+                  key={brand.id}
+                  to={`/brands/${brand.slug || brand.id}`}
+                  className="bg-black rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
+                >
+                  <div className="w-20 h-20 mb-4 overflow-hidden rounded-full bg-gray-100 flex items-center justify-center">
+                    {brand.icon && brand.icon.startsWith('data:image') ? (
+                      <img src={brand.icon} alt={brand.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-gray-500 text-sm">No Icon</span>
+                    )}
+                  </div>
+                  <h1 className="text-lg text-white font-medium text-center mb-2">
+                    {brand.title}
+                  </h1>
+                </Link>
+              ))}
           </div>
         </div>
       </section>
