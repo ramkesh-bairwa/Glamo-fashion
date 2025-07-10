@@ -2,23 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star } from 'lucide-react';
 import TredingProductCard from '../components/ui/TrendingProductCard';
+import Login from './Login';
 
 const Home: React.FC = () => {
+  const [showLogin, setShowLogin] = useState(true); // default: show login
+  const [showLoginBox, setShowLoginBox] = useState(false); // show box after 3s
+
   const [featuredBrands, setFeaturedBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const [trendingProducts, setTrendingProducts] = useState([]);
 
-  //Catgories
+  useEffect(() => {
+    // Delay login form 3 sec
+    const timer = setTimeout(() => {
+      setShowLoginBox(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Login check
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      setShowLogin(false); // user is logged in
+    }
+  }, []);
+
+  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${baseUrl}/categories`);
         const result = await response.json();
-        
         if (result.status && result.data.data) {
-          const Cats=result.data.data
-          setCategories(Cats);
+          setCategories(result.data.data);
         }
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -44,22 +62,28 @@ const Home: React.FC = () => {
     fetchTrendingProducts();
   }, []);
 
+  // Fetch brands
   useEffect(() => {
-  const fetchBrands = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/brands`);
-      const result = await response.json();
-      console.log(result.data)
-      if (result.status && Array.isArray(result.data)) {
-        setFeaturedBrands(result.data);
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/brands`);
+        const result = await response.json();
+        if (result.status && Array.isArray(result.data)) {
+          setFeaturedBrands(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch featured brands:', error);
       }
-    } catch (error) {
-      console.error('Failed to fetch featured brands:', error);
-    }
-  };
+    };
 
-  fetchBrands();
-}, []);
+    fetchBrands();
+  }, []);
+
+console.log(showLogin)
+  if (showLogin) {
+    return    <Login onLoginSuccess={() => setShowLogin(true)} />;
+
+  }
 
   return (
     <div className="mt-16">
