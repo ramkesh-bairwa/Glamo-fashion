@@ -3,10 +3,17 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Star } from 'lucide-react';
 import TredingProductCard from '../components/ui/TrendingProductCard';
 import Login from './Login';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules'; // ✅ ADD Autoplay
+import 'swiper/css';
+import 'swiper/css/navigation'; // ✅ for arrows
+import { useNavigate } from 'react-router-dom'; // ✅ Required for navigation
+
 
 const Home: React.FC = () => {
   const [showLogin, setShowLogin] = useState(true); // default: show login
   const [showLoginBox, setShowLoginBox] = useState(false); // show box after 3s
+  const navigate = useNavigate();
 
   const [featuredBrands, setFeaturedBrands] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -123,29 +130,52 @@ console.log(showLogin)
                 <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
                   Explore Affiliate Categories
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                  {categories.length === 0 ? (
-                    <p className="text-gray-500 col-span-full text-center">Loading categories...</p>
-                  ) : (
-                    categories.map((cat) => (
-                      <div
-                        key={cat.slug}
-                        onClick={() => navigate(`/category/${cat.slug}`)}
-                        className="relative rounded-2xl overflow-hidden cursor-pointer group"
-                      >
-                        <img
-                          src={cat.icon}
-                          alt={cat.title}
-                          className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
-                        <div className="absolute bottom-4 left-4 z-10">
-                          <h3 className="text-xl text-white font-semibold">{cat.title}</h3>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
+                <section className="bg-white text-white py-16 px-6 md:px-20">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                      Explore Affiliate Categories
+                    </h2>
+
+                    {categories.length === 0 ? (
+                            <p className="text-gray-500 text-center">Loading categories...</p>
+                          ) : (
+                            <Swiper
+                              slidesPerView={1}
+                              spaceBetween={16}
+                              breakpoints={{
+                                640: { slidesPerView: 2 },
+                                1024: { slidesPerView: 4 },
+                              }}
+                              modules={[Navigation, Autoplay]}
+                              navigation={true}
+                              autoplay={{
+                                delay: 3000,
+                                disableOnInteraction: false,
+                              }}
+                              loop={true}
+                              className="relative"
+                            >
+                              {categories.map((cat) => (
+                                <SwiperSlide key={cat.slug}>
+                                  <div
+                                    onClick={() => navigate(`/category/${cat.slug}`)}
+                                    className="relative rounded-2xl overflow-hidden cursor-pointer group"
+                                  >
+                                    <img
+                                      src={cat.icon}
+                                      alt={cat.title}
+                                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+                                    <div className="absolute bottom-4 left-4 z-10">
+                                      <h3 className="text-xl text-white font-semibold">{cat.title}</h3>
+                                    </div>
+                                  </div>
+                                </SwiperSlide>
+                              ))}
+                            </Swiper>
+                          )}
+                  </section>
+
               </section>
 
 

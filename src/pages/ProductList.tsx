@@ -12,10 +12,12 @@ const ProductList: React.FC = () => {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 2000 });
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
+          setLoading(false); 
       try {
         const response = await fetch(`${baseUrl}/affiliate-product`);
         const result = await response.json();
@@ -43,6 +45,7 @@ const ProductList: React.FC = () => {
         }
       } catch (error) {
         console.error('Failed to fetch products:', error);
+          setLoading(false);
       }
     };
 
@@ -99,6 +102,32 @@ const ProductList: React.FC = () => {
     setSelectedCategories([]);
     setPriceRange({ min: 0, max: 2000 });
   };
+
+  {loading ? (
+  <div className="flex justify-center items-center py-24">
+    <span className="text-gray-600 text-lg">Loading products...</span>
+  </div>
+) : (
+  <>
+    {displayProducts.length === 0 ? (
+      <div className="text-center py-12">
+        <p className="text-lg text-gray-600">No products found matching your filters.</p>
+        <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
+          Clear Filters
+        </button>
+      </div>
+    ) : (
+      <>
+        <p className="text-gray-500 mb-6">Showing {displayProducts.length} products</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </>
+    )}
+  </>
+)}
 
   return (
     <div className="container py-8 mt-16">

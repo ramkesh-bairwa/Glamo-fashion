@@ -8,31 +8,52 @@ const Contact: React.FC = () => {
     subject: '',
     message: ''
   });
-  
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-      
-      // Reset status after 5 seconds
-      setTimeout(() => setSubmitStatus(null), 5000);
-    }, 1000);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch(`${baseUrl}/contact-us-create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+      if (response.ok && result.status) {
+        setSubmitStatus('success');
+        setValidationErrors({}); // ✅ Clear previous errors
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+      } else {
+        setSubmitStatus('error');
+        if (result.errors && Array.isArray(result.errors)) {
+          setValidationErrors(result.errors[0]);
+        }
+      }
+  } catch (error) {
+    console.error('Form submit error:', error);
+    setSubmitStatus('error');
+  }
+
+  // Clear status after 5 seconds
+  setTimeout(() => setSubmitStatus(null), 5000);
+};
 
   return (
     <div className="mt-16">
@@ -137,17 +158,6 @@ const Contact: React.FC = () => {
                   </div>
                 )}
                 
-                {submitStatus === 'error' && (
-                  <div className="mb-6 bg-red-100 text-red-800 p-4 rounded-md flex items-start">
-                    <div className="mr-3 mt-0.5">
-                      <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <p>There was an error sending your message. Please try again later.</p>
-                  </div>
-                )}
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="name" className="block text-gray-700 font-medium mb-2">Your Name</label>
@@ -158,8 +168,11 @@ const Contact: React.FC = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="input"
-                      required
+                      
                     />
+                    {validationErrors.name && (
+                        <p className="text-sm text-red-600 mt-1">{validationErrors.name}</p>
+                      )}
                   </div>
                   
                   <div>
@@ -171,8 +184,11 @@ const Contact: React.FC = () => {
                       value={formData.email}
                       onChange={handleChange}
                       className="input"
-                      required
+                      
                     />
+                    {validationErrors.email && (
+                        <p className="text-sm text-red-600 mt-1">{validationErrors.email}</p>
+                      )}
                   </div>
                 </div>
                 
@@ -184,7 +200,7 @@ const Contact: React.FC = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     className="input"
-                    required
+                    
                   >
                     <option value="">Select a subject</option>
                     <option value="general">General Inquiry</option>
@@ -193,6 +209,9 @@ const Contact: React.FC = () => {
                     <option value="partnership">Partnership Opportunity</option>
                     <option value="other">Other</option>
                   </select>
+                  {validationErrors.subject && (
+                      <p className="text-sm text-red-600 mt-1">{validationErrors.subject}</p>
+                    )}
                 </div>
                 
                 <div className="mb-6">
@@ -204,14 +223,21 @@ const Contact: React.FC = () => {
                     onChange={handleChange}
                     rows={6}
                     className="input"
-                    required
+                    
                   ></textarea>
+
+                  {validationErrors.message && (
+                    <p className="text-sm text-red-600 mt-1">{validationErrors.message}</p>
+                  )}
                 </div>
                 
-                <button type="submit" className="btn btn-primary py-3 px-8 flex items-center">
-                  <Send size={18} className="mr-2" />
-                  Send Message
-                </button>
+                    <button
+                            type="submit"
+                            className="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-lg flex items-center transition-colors"
+                          >
+                            <Send size={18} className="mr-2" />
+                            Send Message
+                          </button>
               </form>
             </div>
           </div>
