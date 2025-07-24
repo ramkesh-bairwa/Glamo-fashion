@@ -125,11 +125,6 @@ console.log(showLogin)
           </div>
         </section>
 
-        
-              <section className="bg-white text-white py-16 px-6 md:px-20">
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-                  Explore Affiliate Categories
-                </h2>
                 <section className="bg-white text-white py-16 px-6 md:px-20">
                     <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
                       Explore Affiliate Categories
@@ -175,10 +170,6 @@ console.log(showLogin)
                             </Swiper>
                           )}
                   </section>
-
-              </section>
-
-
 
       {/* Trending Products */}
         <section className="py-16">
