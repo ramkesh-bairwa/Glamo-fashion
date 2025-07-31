@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Filter, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { Filter, SlidersHorizontal, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import { ProductType } from '../types';
 
@@ -13,13 +13,17 @@ const ProductList: React.FC = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10); // Items per page
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
-          setLoading(false); 
+      setLoading(true); 
       try {
-        const response = await fetch(`${baseUrl}/affiliate-product`);
+        const response = await fetch(`${baseUrl}/affiliate-product?page=${page}&limit=${limit}`);
         const result = await response.json();
 
         if (result.status && result.data) {
@@ -42,15 +46,18 @@ const ProductList: React.FC = () => {
           }));
           setProducts(mapped);
           setDisplayProducts(mapped);
+          setTotalPages(result.data.totalPages);
+          setTotalItems(result.data.totalItems);
         }
       } catch (error) {
         console.error('Failed to fetch products:', error);
-          setLoading(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [page, baseUrl, limit]);
 
   const uniqueBrands = Array.from(new Set(products.map(p => p.brand_name)));
   const uniqueCategories = Array.from(new Set(products.map(p => p.category_name)));
@@ -103,31 +110,48 @@ const ProductList: React.FC = () => {
     setPriceRange({ min: 0, max: 2000 });
   };
 
-  {loading ? (
-  <div className="flex justify-center items-center py-24">
-    <span className="text-gray-600 text-lg">Loading products...</span>
-  </div>
-) : (
-  <>
-    {displayProducts.length === 0 ? (
-      <div className="text-center py-12">
-        <p className="text-lg text-gray-600">No products found matching your filters.</p>
-        <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
-          Clear Filters
-        </button>
-      </div>
-    ) : (
-      <>
-        <p className="text-gray-500 mb-6">Showing {displayProducts.length} products</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center mt-8">
+        <nav className="flex items-center gap-1">
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
+            className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+            <button
+              key={pageNum}
+              onClick={() => handlePageChange(pageNum)}
+              className={`w-10 h-10 rounded-md border ${page === pageNum ? 'bg-primary text-white border-primary' : 'border-gray-300'}`}
+            >
+              {pageNum}
+            </button>
           ))}
-        </div>
-      </>
-    )}
-  </>
-)}
+
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages}
+            className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </nav>
+      </div>
+    );
+  };
 
   return (
     <div className="container py-8 mt-16">
@@ -226,21 +250,32 @@ const ProductList: React.FC = () => {
         </div>
 
         <div className="flex-1">
-          {displayProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-gray-600">No products found matching your filters.</p>
-              <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
-                Clear Filters
-              </button>
+          {loading ? (
+            <div className="flex justify-center items-center py-24">
+              <span className="text-gray-600 text-lg">Loading products...</span>
             </div>
           ) : (
             <>
-              <p className="text-gray-500 mb-6">Showing {displayProducts.length} products</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {displayProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
+              {displayProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600">No products found matching your filters.</p>
+                  <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
+                    Clear Filters
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-gray-500 mb-6">
+                    Showing {(page - 1) * limit + 1} - {Math.min(page * limit, totalItems)} of {totalItems} products
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {displayProducts.map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                  {renderPagination()}
+                </>
+              )}
             </>
           )}
         </div>
