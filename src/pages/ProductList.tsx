@@ -14,14 +14,14 @@ const ProductList: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [limit] = useState(10); // Items per page
+  const [limit] = useState(2);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
         const response = await fetch(`${baseUrl}/affiliate-product?page=${page}&limit=${limit}`);
         const result = await response.json();
@@ -108,6 +108,7 @@ const ProductList: React.FC = () => {
     setSelectedBrands([]);
     setSelectedCategories([]);
     setPriceRange({ min: 0, max: 2000 });
+    setSortBy('featured');
   };
 
   const handlePageChange = (newPage: number) => {
@@ -120,33 +121,31 @@ const ProductList: React.FC = () => {
   const renderPagination = () => {
     if (totalPages <= 1) return null;
 
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
     return (
       <div className="flex justify-center mt-8">
         <nav className="flex items-center gap-1">
           <button
-            onClick={() => handlePageChange(page - 1)}
+            onClick={() => handlePageChange(1)}
             disabled={page === 1}
             className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronLeft size={16} />
+            «
           </button>
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-            <button
-              key={pageNum}
-              onClick={() => handlePageChange(pageNum)}
-              className={`w-10 h-10 rounded-md border ${page === pageNum ? 'bg-primary text-white border-primary' : 'border-gray-300'}`}
-            >
-              {pageNum}
-            </button>
-          ))}
-
+         
           <button
-            onClick={() => handlePageChange(page + 1)}
+            onClick={() => handlePageChange(totalPages)}
             disabled={page === totalPages}
             className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronRight size={16} />
+            »
           </button>
         </nav>
       </div>
@@ -177,7 +176,6 @@ const ProductList: React.FC = () => {
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
                 <option value="newest">Newest Arrivals</option>
-                <option value="rating">Highest Rated</option>
               </select>
               <ChevronDown size={16} className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
             </div>
@@ -186,15 +184,129 @@ const ProductList: React.FC = () => {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
+        {/* Desktop Filters */}
         <div className="hidden md:block w-64 flex-shrink-0">
-          <div className="bg-white p-5 rounded-lg shadow-sm mb-4">
+          <div className="bg-white p-5 rounded-lg shadow-sm mb-4 sticky top-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-medium text-lg">Filters</h3>
-              {(selectedBrands.length > 0 || selectedCategories.length > 0) && (
+              {(selectedBrands.length > 0 || selectedCategories.length > 0 || priceRange.max < 2000 || sortBy !== 'featured') && (
                 <button className="text-sm text-primary hover:underline" onClick={clearAllFilters}>
                   Clear all
                 </button>
               )}
+            </div>
+
+            <div className="mb-6">
+              <h4 className="font-medium mb-3">Price Range</h4>
+              <div className="mb-2 flex justify-between text-sm">
+                <span>₹ {priceRange.min}</span>
+                <span>₹ {priceRange.max}</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="2000"
+                value={priceRange.max}
+                onChange={(e) => setPriceRange({ ...priceRange, max: Number(e.target.value) })}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+            </div>
+
+            <div className="mb-6">
+              <h4 className="font-medium mb-3">Brands</h4>
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {uniqueBrands.map((brand) => (
+                  <label key={brand} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedBrands.includes(brand)}
+                      onChange={() => toggleBrand(brand)}
+                      className="rounded text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm">{brand}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <h4 className="font-medium mb-3">Categories</h4>
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {uniqueCategories.map((category) => (
+                  <label key={category} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(category)}
+                      onChange={() => toggleCategory(category)}
+                      className="rounded text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm">{category}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Grid */}
+        <div className="flex-1">
+          {loading ? (
+            <div className="flex justify-center items-center py-24">
+              <span className="text-gray-600 text-lg">Loading products...</span>
+            </div>
+          ) : (
+            <>
+              {displayProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600">No products found matching your filters.</p>
+                  <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
+                    Clear Filters
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-gray-500 mb-6">
+                    Showing {(page - 1) * limit + 1} - {Math.min(page * limit, totalItems)} of {totalItems} products
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {displayProducts.map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                  {renderPagination()}
+                </>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Filter Modal */}
+      {filterOpen && (
+        <div className="md:hidden fixed inset-0 z-50 bg-gray-900/50 flex">
+          <div className="bg-white w-4/5 max-w-xs h-full overflow-y-auto p-6 ml-auto animate-slide-up">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="font-medium text-lg flex items-center">
+                <SlidersHorizontal size={18} className="mr-2" />
+                Filters
+              </h3>
+              <button onClick={() => setFilterOpen(false)} className="p-1 text-gray-500">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <h4 className="font-medium mb-3">Sort By</h4>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="newest">Newest Arrivals</option>
+              </select>
             </div>
 
             <div className="mb-6">
@@ -230,107 +342,9 @@ const ProductList: React.FC = () => {
               </div>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-6">
               <h4 className="font-medium mb-3">Categories</h4>
-              <div className="space-y-2">
-                {uniqueCategories.map((category) => (
-                  <label key={category} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.includes(category)}
-                      onChange={() => toggleCategory(category)}
-                      className="rounded text-primary focus:ring-primary"
-                    />
-                    <span className="text-sm">{category}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1">
-          {loading ? (
-            <div className="flex justify-center items-center py-24">
-              <span className="text-gray-600 text-lg">Loading products...</span>
-            </div>
-          ) : (
-            <>
-              {displayProducts.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-lg text-gray-600">No products found matching your filters.</p>
-                  <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
-                    Clear Filters
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <p className="text-gray-500 mb-6">
-                    Showing {(page - 1) * limit + 1} - {Math.min(page * limit, totalItems)} of {totalItems} products
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {displayProducts.map(product => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
-                  </div>
-                  {renderPagination()}
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      {filterOpen && (
-        <div className="md:hidden fixed inset-0 z-50 bg-gray-900/50 flex">
-          <div className="bg-white w-4/5 max-w-xs h-full overflow-y-auto p-6 ml-auto animate-slide-up">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-medium text-lg flex items-center">
-                <SlidersHorizontal size={18} className="mr-2" />
-                Filters
-              </h3>
-              <button onClick={() => setFilterOpen(false)} className="p-1 text-gray-500">
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Mobile Filters */}
-            <div className="mb-6">
-              <h4 className="font-medium mb-3">Price Range</h4>
-              <div className="mb-2 flex justify-between text-sm">
-                <span>${priceRange.min}</span>
-                <span>${priceRange.max}</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="2000"
-                value={priceRange.max}
-                onChange={(e) => setPriceRange({ ...priceRange, max: Number(e.target.value) })}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
-              />
-            </div>
-
-            <div className="mb-6">
-              <h4 className="font-medium mb-3">Brands</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
-                {uniqueBrands.map((brand) => (
-                  <label key={brand} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedBrands.includes(brand)}
-                      onChange={() => toggleBrand(brand)}
-                      className="rounded text-primary focus:ring-primary"
-                    />
-                    <span className="text-sm">{brand}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <h4 className="font-medium mb-3">Categories</h4>
-              <div className="space-y-2">
                 {uniqueCategories.map((category) => (
                   <label key={category} className="flex items-center gap-2">
                     <input
