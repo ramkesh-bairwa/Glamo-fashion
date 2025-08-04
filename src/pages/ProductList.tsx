@@ -44,6 +44,7 @@ const ProductList: React.FC = () => {
             reviews: 0,
             rating: 0,
           }));
+          // console.log(result.data.totalItems)
           setProducts(mapped);
           setDisplayProducts(mapped);
           setTotalPages(result.data.totalPages);
