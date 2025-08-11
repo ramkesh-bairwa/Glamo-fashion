@@ -14,9 +14,12 @@ const ProductList: React.FC = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(21);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [brands, setBrands] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  
 
   // Fetch products from API
   useEffect(() => {
@@ -44,7 +47,6 @@ const ProductList: React.FC = () => {
             reviews: 0,
             rating: 0,
           }));
-          // console.log(result.data.totalItems)
           setProducts(mapped);
           setDisplayProducts(mapped);
           setTotalPages(result.data.totalPages);
@@ -60,8 +62,39 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, [page, baseUrl, limit]);
 
-  const uniqueBrands = Array.from(new Set(products.map(p => p.brand_name)));
-  const uniqueCategories = Array.from(new Set(products.map(p => p.category_name)));
+  // Fetch brands
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/brands`);
+        const result = await response.json();
+        if (result.status && result.data) {
+          setBrands(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch brands:', error);
+      }
+    };
+
+    fetchBrands();
+  }, [baseUrl]);
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/categories`);
+        const result = await response.json();
+        if (result.status && result.data?.data) {
+          setCategories(result.data.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, [baseUrl]);
 
   // Filter and sort logic
   useEffect(() => {
@@ -88,6 +121,10 @@ const ProductList: React.FC = () => {
         break;
       case 'newest':
         filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      default:
+        // Default sorting (featured)
+        break;
     }
 
     setDisplayProducts(filtered);
@@ -118,40 +155,45 @@ const ProductList: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+const renderPagination = () => {
+  if (totalPages <= 1) return null;
 
-  const renderPagination = () => {
-    if (totalPages <= 1) return null;
-
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    return (
-      <div className="flex justify-center mt-8">
-        <nav className="flex items-center gap-1">
-          <button
-            onClick={() => handlePageChange(1)}
-            disabled={page === 1}
-            className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            «
-          </button>
-         
-          <button
-            onClick={() => handlePageChange(totalPages)}
-            disabled={page === totalPages}
-            className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            »
-          </button>
-        </nav>
-      </div>
-    );
-  };
+  return (
+    <div className="flex justify-center mt-8">
+      <nav className="flex items-center gap-1">
+        {/* <button
+          onClick={() => handlePageChange(1)}
+          disabled={page === 1}
+          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          «
+        </button> */}
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft size={16} />
+        </button>
+        
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page === totalPages}
+          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ChevronRight size={16} />
+        </button>
+        {/* <button
+          onClick={() => handlePageChange(totalPages)}
+          disabled={page === totalPages}
+          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          »
+        </button> */}
+      </nav>
+    </div>
+  );
+};
 
   return (
     <div className="container py-8 mt-16">
@@ -216,15 +258,15 @@ const ProductList: React.FC = () => {
             <div className="mb-6">
               <h4 className="font-medium mb-3">Brands</h4>
               <div className="space-y-2 max-h-60 overflow-y-auto">
-                {uniqueBrands.map((brand) => (
-                  <label key={brand} className="flex items-center gap-2">
+                {brands.map((brand) => (
+                  <label key={brand.id} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedBrands.includes(brand)}
-                      onChange={() => toggleBrand(brand)}
+                      checked={selectedBrands.includes(brand.title)}
+                      onChange={() => toggleBrand(brand.title)}
                       className="rounded text-primary focus:ring-primary"
                     />
-                    <span className="text-sm">{brand}</span>
+                    <span className="text-sm">{brand.title}</span>
                   </label>
                 ))}
               </div>
@@ -233,15 +275,15 @@ const ProductList: React.FC = () => {
             <div className="mb-4">
               <h4 className="font-medium mb-3">Categories</h4>
               <div className="space-y-2 max-h-60 overflow-y-auto">
-                {uniqueCategories.map((category) => (
-                  <label key={category} className="flex items-center gap-2">
+                {categories.map((category) => (
+                  <label key={category.id} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedCategories.includes(category)}
-                      onChange={() => toggleCategory(category)}
+                      checked={selectedCategories.includes(category.title)}
+                      onChange={() => toggleCategory(category.title)}
                       className="rounded text-primary focus:ring-primary"
                     />
-                    <span className="text-sm">{category}</span>
+                    <span className="text-sm">{category.title}</span>
                   </label>
                 ))}
               </div>
@@ -329,15 +371,15 @@ const ProductList: React.FC = () => {
             <div className="mb-6">
               <h4 className="font-medium mb-3">Brands</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
-                {uniqueBrands.map((brand) => (
-                  <label key={brand} className="flex items-center gap-2">
+                {brands.map((brand) => (
+                  <label key={brand.id} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedBrands.includes(brand)}
-                      onChange={() => toggleBrand(brand)}
+                      checked={selectedBrands.includes(brand.title)}
+                      onChange={() => toggleBrand(brand.title)}
                       className="rounded text-primary focus:ring-primary"
                     />
-                    <span className="text-sm">{brand}</span>
+                    <span className="text-sm">{brand.title}</span>
                   </label>
                 ))}
               </div>
@@ -346,15 +388,15 @@ const ProductList: React.FC = () => {
             <div className="mb-6">
               <h4 className="font-medium mb-3">Categories</h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
-                {uniqueCategories.map((category) => (
-                  <label key={category} className="flex items-center gap-2">
+                {categories.map((category) => (
+                  <label key={category.id} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={selectedCategories.includes(category)}
-                      onChange={() => toggleCategory(category)}
+                      checked={selectedCategories.includes(category.title)}
+                      onChange={() => toggleCategory(category.title)}
                       className="rounded text-primary focus:ring-primary"
                     />
-                    <span className="text-sm">{category}</span>
+                    <span className="text-sm">{category.title}</span>
                   </label>
                 ))}
               </div>
