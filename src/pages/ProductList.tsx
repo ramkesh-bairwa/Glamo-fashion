@@ -5,7 +5,6 @@ import { ProductType } from '../types';
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
-  const [displayProducts, setDisplayProducts] = useState<ProductType[]>([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -19,14 +18,43 @@ const ProductList: React.FC = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [brands, setBrands] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  
 
-  // Fetch products from API
+  // Build query string from filters
+  const buildQueryString = () => {
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
+
+    // Add filters
+    if (selectedBrands.length > 0) {
+      params.append('brand', selectedBrands.join(','));
+    }
+    if (selectedCategories.length > 0) {
+      params.append('category', selectedCategories.join(','));
+    }
+    if (priceRange.min > 0 || priceRange.max < 2000) {
+      params.append('price_range', `${priceRange.min}-${priceRange.max}`);
+    }
+
+    // Add sorting
+    if (sortBy === 'price-low') {
+      params.append('price_var', 'lth');
+    } else if (sortBy === 'price-high') {
+      params.append('price_var', 'htl');
+    } else if (sortBy === 'newest') {
+      // Assuming your API uses createdAt DESC for newest
+    }
+
+    return params.toString();
+  };
+
+  // Fetch products from API with filters
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${baseUrl}/affiliate-product?page=${page}&limit=${limit}`);
+        const queryString = buildQueryString();
+        const response = await fetch(`${baseUrl}/affiliate-product?${queryString}`);
         const result = await response.json();
 
         if (result.status && result.data) {
@@ -48,9 +76,8 @@ const ProductList: React.FC = () => {
             rating: 0,
           }));
           setProducts(mapped);
-          setDisplayProducts(mapped);
           setTotalPages(result.data.totalPages);
-          setTotalItems(result.data.totalItems);
+          setTotalItems(result.data.total);
         }
       } catch (error) {
         console.error('Failed to fetch products:', error);
@@ -60,9 +87,9 @@ const ProductList: React.FC = () => {
     };
 
     fetchProducts();
-  }, [page, baseUrl, limit]);
+  }, [page, selectedBrands, selectedCategories, priceRange, sortBy, baseUrl, limit]);
 
-  // Fetch brands
+  // Fetch brands and categories
   useEffect(() => {
     const fetchBrands = async () => {
       try {
@@ -79,7 +106,6 @@ const ProductList: React.FC = () => {
     fetchBrands();
   }, [baseUrl]);
 
-  // Fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -95,40 +121,6 @@ const ProductList: React.FC = () => {
 
     fetchCategories();
   }, [baseUrl]);
-
-  // Filter and sort logic
-  useEffect(() => {
-    let filtered = [...products];
-
-    if (selectedBrands.length > 0) {
-      filtered = filtered.filter(p => selectedBrands.includes(p.brand_name));
-    }
-
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter(p => selectedCategories.includes(p.category_name));
-    }
-
-    filtered = filtered.filter(
-      p => p.price >= priceRange.min && p.price <= priceRange.max
-    );
-
-    switch (sortBy) {
-      case 'price-low':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-high':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'newest':
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        break;
-      default:
-        // Default sorting (featured)
-        break;
-    }
-
-    setDisplayProducts(filtered);
-  }, [products, selectedBrands, selectedCategories, priceRange, sortBy]);
 
   const toggleBrand = (brand: string) => {
     setSelectedBrands(prev =>
@@ -155,45 +147,31 @@ const ProductList: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
-const renderPagination = () => {
-  if (totalPages <= 1) return null;
 
-  return (
-    <div className="flex justify-center mt-8">
-      <nav className="flex items-center gap-1">
-        {/* <button
-          onClick={() => handlePageChange(1)}
-          disabled={page === 1}
-          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          «
-        </button> */}
-        <button
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 1}
-          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        
-        <button
-          onClick={() => handlePageChange(page + 1)}
-          disabled={page === totalPages}
-          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <ChevronRight size={16} />
-        </button>
-        {/* <button
-          onClick={() => handlePageChange(totalPages)}
-          disabled={page === totalPages}
-          className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          »
-        </button> */}
-      </nav>
-    </div>
-  );
-};
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center mt-8">
+        <nav className="flex items-center gap-1">
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 1}
+            className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === totalPages}
+            className="p-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </nav>
+      </div>
+    );
+  };
 
   return (
     <div className="container py-8 mt-16">
@@ -299,7 +277,7 @@ const renderPagination = () => {
             </div>
           ) : (
             <>
-              {displayProducts.length === 0 ? (
+              {products.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-lg text-gray-600">No products found matching your filters.</p>
                   <button onClick={clearAllFilters} className="mt-4 btn btn-outline">
@@ -312,7 +290,7 @@ const renderPagination = () => {
                     Showing {(page - 1) * limit + 1} - {Math.min(page * limit, totalItems)} of {totalItems} products
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {displayProducts.map(product => (
+                    {products.map(product => (
                       <ProductCard key={product.id} product={product} />
                     ))}
                   </div>
