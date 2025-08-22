@@ -46,14 +46,9 @@ const ProductDetail: React.FC = () => {
     try {
       const res = await fetch(`${baseUrl}/affiliate-product/${id}`);
       const json = await res.json();
-      // const products=Object.keys(json.data.items).length
-      // console.log(json.status)
       if (json.status) {
-        const singleProduct = json.data.items;
+        const singleProduct = json.data;
         setProduct(singleProduct);
-
-        // ✅ Fetch related products after product is loaded
-        // fetchRelatedProducts(singleProduct);
       } else {
         console.error("Product not found in response:", json);
       }
@@ -108,11 +103,6 @@ fetchRelatedProducts()
   //   fetchProduct(); // ✅ Only this needed
   // }
 }, []);
-
-
-
-  // const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  // const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   if (loading) {
    return (
