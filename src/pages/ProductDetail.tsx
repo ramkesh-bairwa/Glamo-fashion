@@ -61,48 +61,34 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  // const fetchRelatedProducts = async (currentProduct: ProductType) => {
-  //   try {
-  //     const res = await fetch(`${baseUrl}/affiliate-product`);
-  //     const json = await res.json();
-  //     const allProducts: ProductType[] = json.data?.items || [];
-
-  //     // const filtered = allProducts.filter(
-  //     //   (item) =>
-  //     //     item.id !== currentProduct.id &&
-  //     //     (item.category === currentProduct.category ||
-  //     //      item.brand === currentProduct.brand)
-  //     // );
-
-  //     setRelatedProducts(json.data.item);
-  //   } catch (err) {
-  //     console.error('Failed to fetch related products:', err);
-  //   }
-  // };
-
   if (id) {
-    fetchProduct(); // ✅ Only this needed
+    fetchProduct();
   }
 }, [id]);
 
 
 useEffect(() => {
-  
-
   const fetchRelatedProducts = async () => {
     try {
       const res = await fetch(`${baseUrl}/affiliate-product/filter/latest`);
       const json = await res.json();
-      setRelatedProducts(json.data);
+
+      if (json.data && product) {
+        const filtered = json.data.filter(
+          (item: ProductType) => item.id !== product.id
+        );
+        setRelatedProducts(filtered);
+      } else {
+        setRelatedProducts(json.data || []);
+      }
     } catch (err) {
       console.error('Failed to fetch related products:', err);
     }
   };
-fetchRelatedProducts()
-  // if (id) {
-  //   fetchProduct(); // ✅ Only this needed
-  // }
-}, []);
+
+  fetchRelatedProducts();
+}, [product]);
+
 
   if (loading) {
    return (
