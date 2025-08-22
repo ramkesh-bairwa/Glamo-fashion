@@ -152,7 +152,7 @@ console.log(showLogin)
                               {categories.map((cat) => (
                                 <SwiperSlide key={cat.slug}>
                                   <div
-                                    onClick={() => navigate(`/category/${cat.slug}`)}
+                                    onClick={() => navigate(`/products?category=${cat.title}`)}
                                     className="relative rounded-2xl overflow-hidden cursor-pointer group"
                                   >
                                     <img

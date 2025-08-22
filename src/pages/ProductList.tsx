@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Filter, SlidersHorizontal, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '../components/ui/ProductCard';
 import { ProductType } from '../types';
+import { useLocation } from 'react-router-dom';
 
 const ProductList: React.FC = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryFromUrl = queryParams.get("category");
   const [products, setProducts] = useState<ProductType[]>([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
@@ -24,6 +28,11 @@ const ProductList: React.FC = () => {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('limit', limit.toString());
+
+    // Add category from URL if it exists
+    if (categoryFromUrl) {
+      params.append('category', categoryFromUrl);
+    }
 
     // Add filters
     if (selectedBrands.length > 0) {
@@ -87,7 +96,7 @@ const ProductList: React.FC = () => {
     };
 
     fetchProducts();
-  }, [page, selectedBrands, selectedCategories, priceRange, sortBy, baseUrl, limit]);
+  }, [page, selectedBrands, selectedCategories, priceRange, sortBy, baseUrl, limit, categoryFromUrl]);
 
   // Fetch brands and categories
   useEffect(() => {
@@ -176,7 +185,9 @@ const ProductList: React.FC = () => {
   return (
     <div className="container py-8 mt-16">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold">All Products</h1>
+        <h1 className="text-2xl md:text-3xl font-bold">
+          {categoryFromUrl ? `${categoryFromUrl} Products` : 'All Products'}
+        </h1>
         <div className="flex items-center gap-4">
           <button
             className="md:hidden flex items-center text-gray-600 gap-1"
